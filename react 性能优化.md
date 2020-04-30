@@ -19,7 +19,7 @@
 
   在根目录有一个 index.js，代码如下，实现的东西大概就是：上面一个 title，中间一个 button(点击 button 修改 title)，下面一个木偶组件，传递一个 name 进去。
 
-  ```
+  ```javascript
   // index.js
   import React, { useState } from "react";
   import ReactDOM from "react-dom";
@@ -39,14 +39,12 @@
   
   const rootElement = document.getElementById("root");
   ReactDOM.render(<App />, rootElement);
-  
-  复制代码
   ```
-
+  
   在同级目录有一个  child.js
 
   ```
-  // child.js
+// child.js
   import React from "react";
   
   function Child(props) {
@@ -57,7 +55,7 @@
   export default Child
   复制代码
   ```
-
+  
   当首次渲染的时候的效果如下：
 
   
@@ -89,17 +87,17 @@
   把声明的组件通过`React.memo`包一层就好了，`React.memo`其实是一个高阶函数，传递一个组件进去，返回一个可以记忆的组件。
 
   ```
-  function Component(props) {
+function Component(props) {
      /* 使用 props 渲染 */
   }
   const MyComponent = React.memo(Component);
   复制代码
   ```
-
+  
   那么上面例子的 Child 组件就可以改成这样：
 
   ```
-  import React from "react";
+import React from "react";
   
   function Child(props) {
     console.log(props.name)
@@ -109,7 +107,7 @@
   export default React.memo(Child)
   复制代码
   ```
-
+  
   通过 `React.memo` 包裹的组件在 props 不变的情况下，这个被包裹的组件是不会重新渲染的，也就是说上面那个例子，在我点击改名字之后，仅仅是 title 会变，但是 Child 组件不会重新渲染（表现出来的效果就是 Child 里面的 log 不会在控制台打印出来），会直接复用最近一次渲染的结果。
 
   这个效果基本跟类组件里面的 `PureComponent`效果极其类似，只是前者用于函数组件，后者用于类组件。
@@ -119,7 +117,7 @@
   默认情况下其只会对 props 的复杂对象做浅层对比(浅层对比就是只会对比前后两次 props 对象引用是否相同，不会对比对象里面的内容是否相同)，如果你想要控制对比过程，那么请将自定义的比较函数通过第二个参数传入来实现。
 
   ```
-  function MyComponent(props) {
+function MyComponent(props) {
     /* 使用 props 渲染 */
   }
   function areEqual(prevProps, nextProps) {
@@ -132,7 +130,7 @@
   export default React.memo(MyComponent, areEqual);
   复制代码
   ```
-
+  
   > 此部分来自于 [React 官网](https://zh-hans.reactjs.org/docs/react-api.html#reactmemo)。
 
   如果你有在类组件里面使用过  [`shouldComponentUpdate()`](https://zh-hans.reactjs.org/docs/react-component.html#shouldcomponentupdate) 这个方法，你会对 `React.memo` 的第二个参数非常的熟悉，不过值得注意的是，如果 props 相等，`areEqual` 会返回 `true`；如果 props 不相等，则返回 `false`。这与 `shouldComponentUpdate` 方法的返回值相反。
@@ -148,7 +146,7 @@
   父组件 index.js
 
   ```
-  // index.js
+// index.js
   import React, { useState } from "react";
   import ReactDOM from "react-dom";
   import Child from "./child";
@@ -175,11 +173,11 @@
   
   复制代码
   ```
-
+  
   子组件 child.js
 
   ```
-  import React from "react";
+import React from "react";
   
   function Child(props) {
     console.log(props);
@@ -194,7 +192,7 @@
   export default React.memo(Child);
   复制代码
   ```
-
+  
   **首次渲染的效果**
 
   
@@ -214,9 +212,9 @@
   咱们来分析，一个组件重新重新渲染，一般三种情况：
 
   1. 要么是组件自己的状态改变
-  2. 要么是父组件重新渲染，导致子组件重新渲染，但是父组件的 props 没有改版
+2. 要么是父组件重新渲染，导致子组件重新渲染，但是父组件的 props 没有改版
   3. 要么是父组件重新渲染，导致子组件重新渲染，但是父组件传递的 props 改变
-
+  
   接下来用排除法查出是什么原因导致的：
 
   第一种很明显就排除了，当点击**改副标题** 的时候并没有去改变 Child 组件的状态；
@@ -232,20 +230,20 @@
   #### useCallback 使用方法
 
   ```
-  const callback = () => {
+const callback = () => {
     doSomething(a, b);
   }
   
   const memoizedCallback = useCallback(callback, [a, b])
   复制代码
   ```
-
+  
   把函数以及依赖项作为参数传入 `useCallback`，它将返回该回调函数的 memoized 版本，这个 memoizedCallback 只有在依赖项有变化的时候才会更新。
 
   那么可以将 index.js 修改为这样：
 
   ```
-  // index.js
+// index.js
   import React, { useState, useCallback } from "react";
   import ReactDOM from "react-dom";
   import Child from "./child";
@@ -276,7 +274,7 @@
   
   复制代码
   ```
-
+  
   这样我们就可以看到只会在首次渲染的时候打印出**桃桃**，当点击改副标题和改标题的时候是不会打印**桃桃**的。
 
   如果我们的 callback 传递了参数，当参数变化的时候需要让它重新添加一个缓存，可以将参数放在 useCallback 第二个参数的数组中，作为依赖的形式，使用方式跟 useEffect 类似。
@@ -288,7 +286,7 @@
   前面介绍的 **React.memo** 和 **useCallback** 都是为了减少重新 render 的次数。对于如何减少计算的量，就是 useMemo 来做的，接下来我们看例子。
 
   ```
-  function App() {
+function App() {
     const [num, setNum] = useState(0);
   
     // 一个非常耗时的一个计算函数
@@ -315,7 +313,7 @@
   }
   复制代码
   ```
-
+  
   首次渲染的效果如下：
 
   
@@ -339,7 +337,7 @@
   首先介绍一下 useMemo 的基本的使用方法，详细的使用方法可见[官网](https://zh-hans.reactjs.org/docs/hooks-reference.html#usememo)：
 
   ```
-  function computeExpensiveValue() {
+function computeExpensiveValue() {
     // 计算量很大的代码
     return xxx
   }
@@ -347,13 +345,13 @@
   const memoizedValue = useMemo(computeExpensiveValue, [a, b]);
   复制代码
   ```
-
+  
   useMemo 的第一个参数就是一个函数，这个函数返回的值会被缓存起来，同时这个值会作为 useMemo 的返回值，第二个参数是一个数组依赖，如果数组里面的值有变化，那么就会重新去执行第一个参数里面的函数，并将函数返回的值缓存起来并作为 useMemo 的返回值 。
 
   了解了 useMemo 的使用方法，然后就可以对上面的例子进行优化，优化代码如下：
 
   ```
-  function App() {
+function App() {
     const [num, setNum] = useState(0);
   
     function expensiveFn() {
@@ -376,7 +374,7 @@
   }
   复制代码
   ```
-
+  
   执行上面的代码，然后现在可以观察无论我们点击 **+1**多少次，只会输出一次 **49995000**，这就代表 expensiveFn 只执行了一次，达到了我们想要的效果。
 
   ### 小结
@@ -384,19 +382,19 @@
   useMemo 的使用场景主要是用来**缓存计算量比较大的函数结果**，可以避免不必要的重复计算，有过 vue 的使用经历同学可能会觉得跟 Vue 里面的计算属性有异曲同工的作用。
 
   > 不过另外提醒两点
-  >
+>
   > 一、如果没有提供依赖项数组，`useMemo` 在每次渲染时都会计算新的值；
   >
   > 二、计算量如果很小的计算函数，也可以选择不使用 useMemo，因为这点优化并不会作为性能瓶颈的要点，反而可能使用错误还会引起一些性能问题。
-
+  
   ## 总结
 
   对于性能瓶颈可能对于小项目遇到的比较少，毕竟计算量小、业务逻辑也不复杂，但是对于大项目，很可能是会遇到性能瓶颈的，但是对于性能优化有很多方面：网络、关键路径渲染、打包、图片、缓存等等方面，具体应该去优化哪方面还得自己去排查，本文只介绍了性能优化中的冰山一角：运行过程中 React 的优化。
 
   1. React 的优化方向：减少 render 的次数；减少重复计算。
-  2. 如何去找到 React 中导致性能问题的方法，见 useCallback 部分。
+2. 如何去找到 React 中导致性能问题的方法，见 useCallback 部分。
   3. 合理的拆分组件其实也是可以做性能优化的，你这么想，如果你整个页面只有一个大的组件，那么当 props 或者 state 变更之后，需要 reconction 的是整个组件，其实你只是变了一个文字，如果你进行了合理的组件拆分，你就可以控制更小粒度的更新。
-
+  
   > 合理拆分组件还有很多其他好处，比如好维护，而且这是学习组件化思想的第一步，合理的拆分组件又是一门艺术了，如果拆分得不合理，就有可能导致状态混乱，多敲代码多思考。
 
   ## 推荐文章
@@ -404,7 +402,7 @@
   我这里只介绍了函数式组件的优化方式，更多的 React 优化技巧可以阅读下面的文章：
 
   - [21 个 React 性能优化技巧](https://www.infoq.cn/article/KVE8xtRs-uPphptq5LUz)
-  - [浅谈React性能优化的方向](https://juejin.im/post/5d045350f265da1b695d5bf2#heading-0)
+- [浅谈React性能优化的方向](https://juejin.im/post/5d045350f265da1b695d5bf2#heading-0)
 
 
   作者：桃翁链接：https://juejin.im/post/5dd337985188252a1873730f来源：掘金著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
