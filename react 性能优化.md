@@ -43,7 +43,7 @@
   
   在同级目录有一个  child.js
 
-  ```
+  ```react
 // child.js
   import React from "react";
   
@@ -145,7 +145,7 @@ function MyComponent(props) {
 
   父组件 index.js
 
-  ```
+  ```react
 // index.js
   import React, { useState } from "react";
   import ReactDOM from "react-dom";
@@ -386,7 +386,7 @@ function App() {
   > 一、如果没有提供依赖项数组，`useMemo` 在每次渲染时都会计算新的值；
   >
   > 二、计算量如果很小的计算函数，也可以选择不使用 useMemo，因为这点优化并不会作为性能瓶颈的要点，反而可能使用错误还会引起一些性能问题。
-  
+
   ## 总结
 
   对于性能瓶颈可能对于小项目遇到的比较少，毕竟计算量小、业务逻辑也不复杂，但是对于大项目，很可能是会遇到性能瓶颈的，但是对于性能优化有很多方面：网络、关键路径渲染、打包、图片、缓存等等方面，具体应该去优化哪方面还得自己去排查，本文只介绍了性能优化中的冰山一角：运行过程中 React 的优化。
@@ -397,10 +397,12 @@ function App() {
   
   > 合理拆分组件还有很多其他好处，比如好维护，而且这是学习组件化思想的第一步，合理的拆分组件又是一门艺术了，如果拆分得不合理，就有可能导致状态混乱，多敲代码多思考。
 
+  react 性能指标工具：这里推荐一下react的性能指标工具react-addons-perf
+
   ## 推荐文章
 
   我这里只介绍了函数式组件的优化方式，更多的 React 优化技巧可以阅读下面的文章：
-
+  
   - [21 个 React 性能优化技巧](https://www.infoq.cn/article/KVE8xtRs-uPphptq5LUz)
 - [浅谈React性能优化的方向](https://juejin.im/post/5d045350f265da1b695d5bf2#heading-0)
 

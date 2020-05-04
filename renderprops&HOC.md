@@ -2,7 +2,7 @@
 
 ## Render Props
 
-```js
+```react
 // https://codepen.io/tudou/full/dmawvY
 const Bar = ({ title }) => (<p>{title}</p>);
 
