@@ -1,6 +1,8 @@
 # React SSR
 
 > 从零开始，揭秘React服务端渲染核心技术：https://segmentfault.com/a/1190000019916830
+>
+> Next.js官方文档：[https://nextjs.frontendx.cn/docs/#%E5%AE%89%E8%A3%85](https://nextjs.frontendx.cn/docs/#安装)
 
 # 抛砖引玉
 
